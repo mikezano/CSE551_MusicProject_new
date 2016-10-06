@@ -1,3 +1,4 @@
+import {inject} from 'aurelia-framework';
 import {Spotify} from 'Vheissu/aurelia-spotify';
 
 //var s = new Spotify();
@@ -58,8 +59,22 @@ export class Music {
     exampleGetArtist() {
         this.spotify.getArtist('1L3hqVCHSL1Ajy3m0z1bAT').then(data => {
             this.data = data;
+        }).error((e)=>{
+            console.log(e);
         });
     } 
+
+    getPlaylists(){
+        this.spotify.getUserPlaylists('mikezano').then(data=>{
+            this.data = data.response;
+        });
+    }
+
+    getPlaylistTracks(){
+        this.spotify.getPlaylistTracks('mikezano', '2i8KbUTxnt8ACq0LEDbLmY').then(data=>{
+            this.data = data.response;
+        });
+    }
 
     search() {
         this.spotify.search(this.searchTerm, this.selectedType).then(data => {

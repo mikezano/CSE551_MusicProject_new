@@ -1,0 +1,18 @@
+<script>
+
+
+  if(window.location.href.includes("access")){
+    var href = window.location.href;
+    var accessTokenIndex = href.indexOf("access_token=");
+    var tokenType = href.indexOf("&token_type=");
+    var accessToken = href.substring(accessTokenIndex + 13, tokenType);
+
+    localStorage.setItem("spotify-token", accessToken);
+
+    console.log(accessToken);
+    console.log("found");      
+    console.log("found");
+    window.close();
+  }
+
+</script> 
