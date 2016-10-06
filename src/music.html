@@ -1,0 +1,24 @@
+<template>
+    <div>${randomNumber}</div>
+    <button click.delegate="login()">Login</button>    
+    <button click.delegate="exampleGetAlbum()">Get Album</button>
+    <button click.delegate="exampleGetArtist()">Get Artist</button>
+    <button click.delegate="exampleGetArtist()">Get Artist</button>
+    <button click.delegate="getTopTracks()">Get Artist</button>
+    <div>
+        <select value.bind="selectedType">
+            <option 
+                repeat.for="option of types"
+                value.bind="option">
+                ${option}
+            </option>
+        </select>
+        <input value.bind="searchTerm">
+        <button click.delegate="search()">Search</button>
+    </div>
+    <div>
+        <input value.bind="songId">
+        <button click.delegate="songInfo()">Song Info</button>
+    </div>    
+    <pre>${data}</pre>
+</template>
