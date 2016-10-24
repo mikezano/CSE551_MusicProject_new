@@ -9,7 +9,8 @@ export function configure(aurelia) {
       config.setClientId('670e55c1f57d48a8bd087cb648ce1a67');
       config.setRedirectUri('http://localhost:9000/src/callback.html');
       config.setScope('playlist-read-private');
-  }); 
+  });
+  aurelia.use.plugin('aurelia-event-aggregator'); 
   //Uncomment the line below to enable animation.
   //aurelia.use.plugin('aurelia-animator-css');
   //if the css animator is enabled, add swap-order="after" to all router-view elements

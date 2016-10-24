@@ -4,30 +4,32 @@
     </h1>
 
     <ul>
-
+        <button click.delegate="check()">check</button>
+        <pre>${userResponses.genres[1]}</pre>
+        <pre>${userResponses}</pre>        
         <li>What genres of music do you like</li>
         <li>
             <ol>
-                <li><input type="text" /></li>
-                <li><input type="text" /></li>
-                <li><input type="text" /></li>
+                <li><input type="text" value.bind="userResponses.genres[0]"/></li>
+                <li><input type="text" value.bind="userResponses.genres[1]"/></li>
+                <li><input type="text" value.bind="userResponses.genres[2]"/></li>
             </ol>        
         </li>           
         <li>Enter the name of three of your favorite singers</li>
         <li>
             <ol>
-                <li><input type="text" /></li>
-                <li><input type="text" /></li>
-                <li><input type="text" /></li>
+                <li><input type="text" value.bind="userResponses.singers[0]"/></li>
+                <li><input type="text" value.bind="userResponses.singers[1]"/></li>
+                <li><input type="text" value.bind="userResponses.singers[2]"/></li>
             </ol>        
         </li>
 
         <li>Enter the name of three of your favorite songs</li>
         <li>
             <ol>
-                <li><input type="text" /></li>
-                <li><input type="text" /></li>
-                <li><input type="text" /></li>
+                <li><input type="text" value.bind="userResponses.songs[0]"/></li>
+                <li><input type="text" value.bind="userResponses.songs[1]"/></li>
+                <li><input type="text" value.bind="userResponses.songs[2]"/></li>
             </ol>        
         </li>        
 
