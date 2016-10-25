@@ -14,7 +14,7 @@ export class Start{
     }
 
     attached(){
-        console.log(this.ea);
+        localStorage.clear('userResponses');
     }
     next()
     {

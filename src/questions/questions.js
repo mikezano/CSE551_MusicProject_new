@@ -11,7 +11,8 @@ export class Questions {
       { route: ['one'],         name: 'one',         moduleId: 'questions/one',         nav: true, title: 'One' }, 
       { route: ['two'],         name: 'two',         moduleId: 'questions/two',         nav: true, title: 'Two' }, 
       { route: ['three'],       name: 'three',       moduleId: 'questions/three',       nav: true, title: 'Three' }, 
-      { route: ['four'],        name: 'four',        moduleId: 'questions/four',        nav: true, title: 'Four' } 
+      { route: ['four'],        name: 'four',        moduleId: 'questions/four',        nav: true, title: 'Four' },
+      { route: ['final'],        name: 'final',        moduleId: 'questions/final',        nav: true, title: 'Final' },
     ]);
     //console.log(router);
     this.router = router;

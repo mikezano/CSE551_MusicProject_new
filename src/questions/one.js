@@ -15,17 +15,18 @@ export class One{
 
     next()
     {
+        localStorage.setItem('userResponses', JSON.stringify(this.userResponses));
         this.router.navigate("two");
     }
 
     attached(){
         console.log("at this point");
-        this.ea.subscribe('sendToOne', (userResponses)=>{
-             this.userResponses = userResponses;
-             console.log("sent over");
-             console.log(this.userResponses);
-         });
-        this.userResponses.test = "Hello";
+        // this.ea.subscribe('sendToOne', (userResponses)=>{
+        //      this.userResponses = userResponses;
+        //      console.log("sent over");
+        //      console.log(this.userResponses);
+        //  });
+        // this.userResponses.test = "Hello";
     }
     
     check(){

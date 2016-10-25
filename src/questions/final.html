@@ -1,0 +1,7 @@
+<template>
+    <h1>Final Results</h1>
+    <button click.delegate="login()">Login</button>
+    <div repeat.for="item of data.artists.items">
+        <p>${item.name}</p>
+    </div>
+</template>

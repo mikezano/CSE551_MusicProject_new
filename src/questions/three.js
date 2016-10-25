@@ -9,6 +9,11 @@ export class Three{
 
     next()
     {
+        localStorage.setItem('userResponses', JSON.stringify(this.userResponses));
         this.router.navigate("four");
+    }
+    
+    attached(){
+        this.userResponses = JSON.parse(localStorage.getItem('userResponses'));
     }
 }

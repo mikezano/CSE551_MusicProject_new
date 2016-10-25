@@ -5,11 +5,11 @@
     <ol>
         <li>
             <ol>
-                <li><button>Clip 1</button></li>
-                <li><button>Clip 2</button></li>
-                <li><button>Clip 3</button></li>
+                <li><input type="text" value.bind="userResponses.instrument[0]" /></li>
+                <li><input type="text" value.bind="userResponses.instrument[1]" /></li>
+                <li><input type="text" value.bind="userResponses.instrument[2]" /></li>
             </ol>   
         </li>
     </ol>
-    <button>Show Results!</button>
+    <button click.delegate="next()">Show Results!</button>
 </template>
