@@ -9,6 +9,7 @@ export class Final{
         this.spotify = spotify;
         //this.login();
         //debugger;
+        this.singerResult = [];
     }
 
     login(){
@@ -17,13 +18,26 @@ export class Final{
             this.spotifyToken = data;
             console.log(this.spotifyToken);
             this.search('artist');
+
+            //this.singerResults =[];
+   
+            this.getResults();
         }).catch(e=>{console.log(e)});
+
     }
 
     next()
     {
         localStorage.setItem('userResponses', JSON.stringify(this.userResponses));
-        this.router.navigate("final");
+    }
+
+    getResults(){
+
+        for(var i in this.userResponses.singers){
+            console.log(this.userResponses.singers[i]);
+            this.search(this.userResponses.singers[i], 'artist', this.singerResult[i]);
+        }
+        
     }
     
     attached(){
@@ -31,12 +45,15 @@ export class Final{
         this.login();
     }
 
-    search(type) {
+    search(searchTerm, type, result) {
         //https://developer.spotify.com/web-api/search-item/
-        this.searchTerm = this.userResponses.genres[0];
-        this.spotify.search(this.searchTerm, type).then(data => {
-            this.data = JSON.parse(data.response);
+        //this.searchTerm = this.userResponses.genres[0];
+        
+        this.spotify.search(searchTerm, type).then(data => {
+            result = JSON.parse(data.response);
+            console.log(this.singerResult);
             debugger;
+
         });
     }  
 }
