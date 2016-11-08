@@ -21,12 +21,12 @@ export class One{
 
     attached(){
         console.log("at this point");
-        // this.ea.subscribe('sendToOne', (userResponses)=>{
-        //      this.userResponses = userResponses;
-        //      console.log("sent over");
-        //      console.log(this.userResponses);
-        //  });
-        // this.userResponses.test = "Hello";
+
+        this.userResponses ={
+            artist: ['metallica', 'megadeth', 'trivium'],
+            album: ['master of puppets', 'ride the lightning', 'rust in peace'],
+            track: ['master of puppets', 'for whom the bell tolls', 'hangar 18']
+        };
     }
     
     check(){

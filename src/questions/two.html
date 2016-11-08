@@ -1,15 +1,39 @@
 <template>
-    <h1>
-        What types of lyrics do you like to hear in your songs
-    </h1>
-    <ol>
-        <li>
-            <ol>
-                <li><input type="checkbox" value.bind="userResponses.political"/>Political</li>
-                <li><input type="checkbox" value.bind="userResponses.love"/>Love</li>
-                <li><input type="checkbox" value.bind="userResponses.war"/>War</li>
-            </ol>   
+    <h2>
+        Select the answers that most apply to you
+    </h2>
+
+    <ul class="list-group"> 
+        <li class="list-group-item">
+            <h4>What is your preference in lyrics?</h4>            
         </li>
-    </ol>
+        <li class="list-group-item">
+            <div class="radio" repeat.for="option of lyricOptions">
+                <label><input type="radio" name="lyrics" model.bind="option" checked.bind="$parent.lyricVal">${option.name}</label>
+            </div>                
+      
+        </li>           
+    </ul>    
+    <ul class="list-group"> 
+        <li class="list-group-item">
+            <h4>How often do you dance to your music?</h4>            
+        </li>
+        <li class="list-group-item">
+            <div class="radio" repeat.for="option of danceabilityOptions">
+                <label><input type="radio" name="dance" model.bind="option" checked.bind="$parent.danceabilityVal">${option.name}</label>
+            </div>                
+        </li>           
+    </ul>
+    <ul class="list-group"> 
+        <li class="list-group-item">
+            <h4>Describe the energy your musical preferences provide</h4>            
+        </li>
+        <li class="list-group-item">
+            <div class="radio" repeat.for="option of energyOptions">
+                <label><input type="radio" name="energy" model.bind="option" checked.bind="$parent.energyVal">${option.name}</label>
+            </div>       
+        </li>           
+    </ul>
+    
     <button click.delegate="next()">Next</button>    
 </template>
