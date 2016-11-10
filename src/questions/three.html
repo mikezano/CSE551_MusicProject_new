@@ -1,15 +1,15 @@
 <template>
-    <h1>
-        Listen to the following sounds and choose the sound phrase that most appeals to you.
-    </h1>
-    <ol>
-        <li>
-            <ol>
-                <li><button>Clip 1</button></li>
-                <li><button>Clip 2</button></li>
-                <li><button>Clip 3</button></li>
-            </ol>   
+
+
+    <ul class="list-group"> 
+        <li class="list-group-item">
+            <h4>Select a sound clip below that you find most appealing to your ears</h4>            
         </li>
-    </ol>
+        <li class="list-group-item">
+            <div class="radio" repeat.for="item of keys">
+                <label><input type="radio" name="key" model.bind="item.value" checked.bind="$parent.keyVal">${item.name}</label>
+            </div>       
+        </li>           
+    </ul>
     <button click.delegate="next()">Next</button>    
 </template>
