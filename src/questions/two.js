@@ -1,6 +1,7 @@
 import {inject} from 'aurelia-framework';
 import { Router } from 'aurelia-router';
 import { UserResponses } from '../models/userResponses';
+import { KeyValuePair } from '../models/keyValuePair';
 
 @inject(Router)
 export class Two{
@@ -30,8 +31,7 @@ export class Two{
     }
 
     next()
-    {
-        
+    {      
         console.log(this.lyricVal);
         this.userResponses.instrumentalness = this.lyricVal.value;
         this.userResponses.danceability = this.danceabilityVal.value;

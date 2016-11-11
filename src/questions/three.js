@@ -1,5 +1,6 @@
 import {inject} from 'aurelia-framework';
 import { Router } from 'aurelia-router';
+import { KeyValuePair } from '../models/userResponses';
 
 @inject(Router)
 export class Three{
