@@ -61,4 +61,21 @@ export class GetInfo
 
         return result;    
     }
+
+    static getArtistsFromTracks(json){
+
+        var data = JSON.parse(json);
+        var tracks = data.tracks;
+        var result =[];
+
+        for(var item in tracks.items){
+            var obj = tracks.items[item];
+            result.push({
+                id: obj.id,
+                name: obj.name,
+                popularity: obj.popularity
+            });
+        }
+        return result;
+    }    
 }
