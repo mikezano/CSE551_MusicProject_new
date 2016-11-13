@@ -10,7 +10,6 @@ export class GetInfo
         var artistsFromAlbums = [];
         for(var item in albums.items){
             var obj = albums.items[item];
-
             for(var i in obj.artists){
                 artistsFromAlbums.push(obj.artists[i].name);
             }
@@ -52,11 +51,7 @@ export class GetInfo
         }  
 
         result = result.sort((a,b)=>{
-            if(a.value > b.value)
-                return 1;
-            if(a.value < b.value)
-                return -1;
-            return 0;
+            return b.value - a.value;
         });  
 
         return result;    

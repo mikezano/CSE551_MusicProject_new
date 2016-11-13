@@ -12,7 +12,9 @@ export class Final{
         this.singerResult = [];
         this.lookFor={
             genres:[],
-            albumArtists:[]
+            albumArtists:[],
+            finalGenreCount:[],
+            tracks:[]
         };
     }
 
@@ -24,90 +26,115 @@ export class Final{
         }).catch(e=>{console.log(e)});
     }
 
-    next()
-    {
+    next(){
         localStorage.setItem('userResponses', JSON.stringify(this.userResponses));
     }
 
     getResults(){
         console.log("Getting Results");
 
-        this.getArtistResults();
-        this.getAlbumResults();
-        this.getTrackResults();
+        Promise.all([
+            this.doWorkArtist(),
+            this.doWorkAlbum(),
+            this.doWorkTrack()
+        ]).then(()=>{
+            console.log(this.lookFor);
+            this.doWorkGenres();
+        });
     }
 
-    getArtistResults(){
+    doWorkArtist(){
+        return new Promise((resolve)=>{
+            this.getArtistResults(resolve);
+        });
+    }
 
+    doWorkAlbum(){
+        return new Promise((resolve)=>{
+            this.getAlbumResults(resolve);
+        });
+    }
+
+    doWorkTrack(){
+        return new Promise((resolve)=>{
+            this.getTrackResults(resolve);
+        });
+    }  
+
+    doWorkGenres(){
+        return new Promise((resolve)=>{
+            this.getTracksFromGenres(resolve);
+        });
+    }      
+
+    getArtistResults(resolve){
 
         Promise.all([
             this.search(this.userResponses.artist[0], 'artist'),
             this.search(this.userResponses.artist[1], 'artist'),
             this.search(this.userResponses.artist[2], 'artist')
-        ]).then(json=>{
+        ]).then(spotifyResult=>{
 
-            var a=[];
-            for(var i in json)
-            {
-                a = GetInfo.getGenres(json[i]);
-                this.lookFor.genres = this.lookFor.genres.concat(a);
-            }
-            // var data = {};
-            // data = JSON.parse(values[0]);
-            // this.getGenres(data.artists);
-            // data = JSON.parse(values[1]);
-            // this.getGenres(data.artists);
-            // data = JSON.parse(values[2]);
-            // this.getGenres(data.artists);   
+            if(!this.lookFor.genresFromArtists)
+                this.lookFor.genresFromArtists = [];
 
-            this.lookFor.genresCounts = GetInfo.getItemCounts(this.lookFor.genres);                     
+            spotifyResult.forEach(result=>{
+                this.lookFor.genresFromArtists = 
+                    this.lookFor.genresFromArtists.concat(GetInfo.getGenres(result));
+            });
 
-            //console.log(this.lookFor.genres);
-            console.log(this.lookFor);
+            this.lookFor.genresFromArtistsCounts = GetInfo.getItemCounts(this.lookFor.genresFromArtists);   
+            resolve();                  
         });
     }
 
-    getAlbumResults(){
+    getAlbumResults(resolve){
 
         Promise.all([
             this.search(this.userResponses.album[0], 'album'),
             this.search(this.userResponses.album[1], 'album'),
             this.search(this.userResponses.album[2], 'album')
-        ]).then(json=>{
+        ]).then(spotifyResult=>{
 
-            var a =[];
-            a = GetInfo.getArtistsFromAlbums(json[0]);
-            this.lookFor.albumArtists = this.lookFor.albumArtists.concat(a);
-            a = GetInfo.getArtistsFromAlbums(json[1]);
-            this.lookFor.albumArtists = this.lookFor.albumArtists.concat(a);
-            a = GetInfo.getArtistsFromAlbums(json[2]);
-            this.lookFor.albumArtists = this.lookFor.albumArtists.concat(a);                                                                    
+            if(!this.lookFor.albumArtists)
+                this.lookFor.albumArtists = [];
+
+            spotifyResult.forEach(result=>{
+                this.lookFor.albumArtists =
+                    this.lookFor.albumArtists.concat(GetInfo.getArtistsFromAlbums(result));
+            });                                                                   
 
             this.lookFor.albumArtistsCounts = GetInfo.getItemCounts(this.lookFor.albumArtists);
-
+            //build promises to look for all genres related to artists from albums
             var promises = [];
-            for(var i in this.lookFor.albumArtistsCounts){
-                var p = this.lookFor.albumArtistsCounts[i];
-                promises.push(this.search(p.key, 'artist'));
-            }
-            //Now that we know the artists these albums belong to,  find out genres for the top three
-            Promise.all(promises).then(json=>{
+            this.lookFor.albumArtistsCounts.forEach(item=>{
+                promises.push(this.search(item.key, 'artist'));
+            });
 
-                var a=[];
-                this.lookFor.genresFromAlbums = [];
-                for(var i in json)
-                {
-                    a = GetInfo.getGenres(json[i]);
-                    this.lookFor.genresFromAlbums = this.lookFor.genresFromAlbums.concat(a);
-                }
-                          
+            //Find genres
+            Promise.all(promises).then(spotifyResult=>{
+
+                if(!this.lookFor.genresFromAlbums)
+                    this.lookFor.genresFromAlbums = [];
+
+                spotifyResult.forEach(result=>{                    
+                    this.lookFor.genresFromAlbums =
+                        this.lookFor.genresFromAlbums.concat(GetInfo.getGenres(result));
+                });
+
+                 //remove genres that don't fit what the artist search had
+                 this.lookFor.genresFromAlbums = this.lookFor.genresFromAlbums.filter(i=>{
+                     return this.lookFor.genresFromArtists.indexOf(i) >= 0;
+                 });
+                
                 this.lookFor.genresFromAlbumsCounts = GetInfo.getItemCounts(this.lookFor.genresFromAlbums);
-                console.log(this.lookFor);
+
+                resolve();
             })
         });
     }    
 
-    getTrackResults(){
+    getTrackResults(resolve){
 
         Promise.all([
             this.search(this.userResponses.track[0], 'track'),
@@ -115,21 +142,60 @@ export class Final{
             this.search(this.userResponses.track[2], 'track')
         ]).then(values=>{
 
-            var data = {};
-            this.lookFor.track = [];
-            this.lookFor.track = this.lookFor.track.concat(GetInfo.getArtistsFromTracks(values[0]));
-            this.lookFor.track = this.lookFor.track.concat(GetInfo.getArtistsFromTracks(values[1]));
-            this.lookFor.track = this.lookFor.track.concat(GetInfo.getArtistsFromTracks(values[2]));
+            this.lookFor.tracks = this.lookFor.tracks.concat(GetInfo.getArtistsFromTracks(values[0]));
+            this.lookFor.tracks = this.lookFor.tracks.concat(GetInfo.getArtistsFromTracks(values[1]));
+            this.lookFor.tracks = this.lookFor.tracks.concat(GetInfo.getArtistsFromTracks(values[2]));
 
-            this.lookFor.track = this.lookFor.track.sort((a,b)=>{
-                if(a.popularity > b.popularity)
-                    return 1;
-                if(a.popularity < b.popularity)
-                    return -1;
-                return 0;
-            })
-            debugger;
+            this.lookFor.tracks = this.lookFor.tracks.sort((a,b)=>{
+                return b.popularity-a.popularity;
+            });
+            resolve();
         });        
+    }
+
+    getTracksFromGenres(resolve){
+        return new Promise((resolve)=>{
+
+            this.lookFor.overallGenreCounts = 
+                this.lookFor.genresFromAlbumsCounts.concat(this.lookFor.genresFromArtistsCounts);
+           
+            this.lookFor.finalGenreCount=[];
+            this.lookFor.overallGenreCounts.forEach(item=>{
+
+                var index = this.lookFor.finalGenreCount.findIndex(i=>{return i.key == item.key;});
+
+                if( index < 0)
+                    this.lookFor.finalGenreCount.push(item);
+                else{            
+                    this.lookFor.finalGenreCount[index].value += item.value;
+                }
+            });
+
+            var promises=[];
+            this.lookFor.finalGenreCount.forEach(i=>{
+                var encode = encodeURIComponent('genre:"'+i.key+'"');
+                debugger;
+                promises.push(this.search(encode, 'track'));
+            });
+
+            Promise.all(promises).then(spotifyResult=>{
+
+                this.lookFor.tracks = this.lookFor.tracks.concat(GetInfo.getArtistsFromTracks(spotifyResult[0]));
+                this.lookFor.tracks = this.lookFor.tracks.concat(GetInfo.getArtistsFromTracks(spotifyResult[1]));
+                this.lookFor.tracks = this.lookFor.tracks.concat(GetInfo.getArtistsFromTracks(spotifyResult[2]));                
+                this.lookFor.tracks = this.lookFor.tracks.concat(GetInfo.getArtistsFromTracks(spotifyResult[3]));                
+                this.lookFor.tracks = this.lookFor.tracks.concat(GetInfo.getArtistsFromTracks(spotifyResult[4]));                
+                this.lookFor.tracks = this.lookFor.tracks.concat(GetInfo.getArtistsFromTracks(spotifyResult[5]));                
+                this.lookFor.tracks = this.lookFor.tracks.concat(GetInfo.getArtistsFromTracks(spotifyResult[6]));                
+                this.lookFor.tracks = this.lookFor.tracks.concat(GetInfo.getArtistsFromTracks(spotifyResult[7]));  
+                this.lookFor.tracks = this.lookFor.tracks.sort((a,b)=>{
+                    return b.popularity-a.popularity;
+                });     
+
+                resolve();
+            });
+        });
+
     }
 
     attached(){

@@ -1,7 +1,47 @@
 <template>
+    <require from="./final.css"></require>
     <h1>Final Results</h1>
     <button click.delegate="login()">Login</button>
-    <div repeat.for="item of data.artists.items">
-        <p>${item.name}</p>
+
+
+    <div class="album-artists-counts">
+        <label>1.a Genres from Artists</label>
+        <div class="row" repeat.for="item of lookFor.genresFromArtistsCounts">
+            <div class="col-sm-4">${item.key}</div>
+            <div class="col-sm-2">${item.value}</div>
+        </div>
     </div>
+
+    <div class="album-artists-counts">
+        <label>2.b Artists from Albums</label>
+        <div class="row" repeat.for="item of lookFor.albumArtistsCounts">
+            <div class="col-sm-4">${item.key}</div>
+            <div class="col-sm-2">${item.value}</div>
+        </div>
+    </div>  
+    <div class="album-artists-counts">
+        <label>2.a Genres from Artists</label>
+        <div class="row" repeat.for="item of lookFor.genresFromAlbumsCounts">
+            <div class="col-sm-4">${item.key}</div>
+            <div class="col-sm-2">${item.value}</div>
+        </div>
+    </div>   
+
+   <div class="album-artists-counts">
+        <label>3.a Tracks</label>
+        <div class="row" repeat.for="item of lookFor.tracks">
+            <div class="col-sm-4">${item.id}</div>
+            <div class="col-sm-4">${item.popularity}</div>
+            <div class="col-sm-4">${item.name}</div>
+        </div>
+    </div>    
+
+   <div class="album-artists-counts">
+        <label>Final Genre Count</label>
+        <div class="row" repeat.for="item of lookFor.finalGenreCount">
+            <div class="col-sm-4">${item.key}</div>
+            <div class="col-sm-2">${item.value}</div>
+        </div>
+    </div>           
+   
 </template>

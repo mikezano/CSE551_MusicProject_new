@@ -1,0 +1,6 @@
+.album-artists-counts{
+    border:1px solid;
+    max-height:200px;
+    overflow:auto;
+    overflow-x:hidden;
+}
