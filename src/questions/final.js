@@ -38,8 +38,17 @@ export class Final{
             this.doWorkAlbum(),
             this.doWorkTrack()
         ]).then(()=>{
-            console.log(this.lookFor);
-            this.doWorkGenres();
+
+            //this.doWorkGenres();
+            this.doWorkGenres().then(()=>{
+                debugger;
+                // var options ={
+                //     seed_tracks:"seed_tracks=60a0Rd6pjrkxjPbaKzXjfq"
+                // };
+                // this.spotify.recommendations(options).then(()=>{
+                //     debugger;
+                // });
+            });
         });
     }
 
@@ -62,8 +71,17 @@ export class Final{
     }  
 
     doWorkGenres(){
-        return new Promise((resolve)=>{
-            this.getTracksFromGenres(resolve);
+        // return new Promise((resolve)=>{
+        //     this.getTracksFromGenres(resolve);
+        // });
+
+        this.getTracksFromGenres().then(()=>{
+            var options ={
+                seed_tracks :"60a0Rd6pjrkxjPbaKzXjfq"
+            };
+            this.spotify.recommendations(options).then((result)=>{
+                debugger;
+            });
         });
     }      
 
@@ -84,6 +102,7 @@ export class Final{
             });
 
             this.lookFor.genresFromArtistsCounts = GetInfo.getItemCounts(this.lookFor.genresFromArtists);   
+
             resolve();                  
         });
     }
@@ -123,9 +142,9 @@ export class Final{
                 });
 
                  //remove genres that don't fit what the artist search had
-                 this.lookFor.genresFromAlbums = this.lookFor.genresFromAlbums.filter(i=>{
-                     return this.lookFor.genresFromArtists.indexOf(i) >= 0;
-                 });
+                //  this.lookFor.genresFromAlbums = this.lookFor.genresFromAlbums.filter(i=>{
+                //      return this.lookFor.genresFromArtists.indexOf(i) >= 0;
+                //  });
                 
                 this.lookFor.genresFromAlbumsCounts = GetInfo.getItemCounts(this.lookFor.genresFromAlbums);
 
@@ -171,27 +190,34 @@ export class Final{
                 }
             });
 
+            //remove genres that appear only once...they may be one offs
             var promises=[];
             this.lookFor.finalGenreCount.forEach(i=>{
-                var encode = encodeURIComponent('genre:"'+i.key+'"');
-                debugger;
-                promises.push(this.search(encode, 'track'));
+                if(i.value >4){
+                    var encode = 'genre:"'+i.key+'"';
+                    promises.push(this.search(encode, 'track'));
+                }
             });
+
 
             Promise.all(promises).then(spotifyResult=>{
 
-                this.lookFor.tracks = this.lookFor.tracks.concat(GetInfo.getArtistsFromTracks(spotifyResult[0]));
-                this.lookFor.tracks = this.lookFor.tracks.concat(GetInfo.getArtistsFromTracks(spotifyResult[1]));
-                this.lookFor.tracks = this.lookFor.tracks.concat(GetInfo.getArtistsFromTracks(spotifyResult[2]));                
-                this.lookFor.tracks = this.lookFor.tracks.concat(GetInfo.getArtistsFromTracks(spotifyResult[3]));                
-                this.lookFor.tracks = this.lookFor.tracks.concat(GetInfo.getArtistsFromTracks(spotifyResult[4]));                
-                this.lookFor.tracks = this.lookFor.tracks.concat(GetInfo.getArtistsFromTracks(spotifyResult[5]));                
-                this.lookFor.tracks = this.lookFor.tracks.concat(GetInfo.getArtistsFromTracks(spotifyResult[6]));                
-                this.lookFor.tracks = this.lookFor.tracks.concat(GetInfo.getArtistsFromTracks(spotifyResult[7]));  
+                spotifyResult.forEach(json=>{
+                    this.lookFor.tracks = this.lookFor.tracks.concat(GetInfo.getArtistsFromTracks(json));
+                });
+
                 this.lookFor.tracks = this.lookFor.tracks.sort((a,b)=>{
                     return b.popularity-a.popularity;
                 });     
-
+                
+                //filter duplicate tracks
+                var removeDupes = [];
+                this.lookFor.tracks.forEach(track=>{
+                    var index = removeDupes.findIndex(i=>i.name == track.name);
+                    if(index<0)
+                        removeDupes.push(track);
+                });
+                this.lookFor.tracks = removeDupes;
                 resolve();
             });
         });
@@ -203,16 +229,27 @@ export class Final{
         this.login();
     }
 
-    search(searchTerm, type, result) {
+    search(searchTerm, type) {
         //https://developer.spotify.com/web-api/search-item/
         //this.searchTerm = this.userResponses.genres[0];
 
         return this.spotify.search(searchTerm, type).then(data => {
+
+            //this.artistCount++;
+            return data.response;
+        });
+    } 
+
+    recommendations(searchTerm, type, result) {
+        //https://developer.spotify.com/web-api/get-recommendations/
+        //this.searchTerm = this.userResponses.genres[0];
+
+        return this.spotify.recommendations(searchTerm, type).then(data => {
            // console.log(data.response);
             //result = JSON.parse(data.response);
             //console.log(this.result);
-            this.artistCount++;
+            //this.artistCount++;
             return data.response;
         });
-    }  
+    }      
 }

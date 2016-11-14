@@ -14,19 +14,19 @@ export class Two{
 
 
         this.lyricOptions=[
-            {value:1, name:'I prefer instrumental music'},
-            {value:2, name:'A normal amount of lyrics is fine'},
-            {value:3, name:'I love music with a lot of singing'}
+            {value:0.0, name:'I prefer instrumental music'},
+            {value:0.5, name:'A normal amount of lyrics is fine'},
+            {value:1.0, name:'I love music with a lot of singing'}
         ]
         this.danceabilityOptions=[
-            {value:'l', name:'I hate dancing.'},
-            {value:'m', name:'Sometimes'},
-            {value:'h', name:'I am always dancing!'}
+            {value:0.0, name:'I hate dancing.'},
+            {value:0.5, name:'Sometimes'},
+            {value:1.0, name:'I am always dancing!'}
         ]
         this.energyOptions=[
-            {value:'l', name:'I just like to relax to music'},
-            {value:'m', name:'Average amount of energy'},
-            {value:'h', name:'HIGH ENERGY'}
+            {value:0.0, name:'I just like to relax to music'},
+            {value:0.5, name:'Average amount of energy'},
+            {value:1.0, name:'HIGH ENERGY'}
         ]
     }
 
