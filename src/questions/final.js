@@ -40,15 +40,7 @@ export class Final{
         ]).then(()=>{
 
             //this.doWorkGenres();
-            this.doWorkGenres().then(()=>{
-                debugger;
-                // var options ={
-                //     seed_tracks:"seed_tracks=60a0Rd6pjrkxjPbaKzXjfq"
-                // };
-                // this.spotify.recommendations(options).then(()=>{
-                //     debugger;
-                // });
-            });
+            this.doWorkGenres();
         });
     }
 
@@ -76,14 +68,57 @@ export class Final{
         // });
 
         this.getTracksFromGenres().then(()=>{
-            var options ={
-                seed_tracks :"60a0Rd6pjrkxjPbaKzXjfq"
-            };
-            this.spotify.recommendations(options).then((result)=>{
-                debugger;
-            });
+
+            this.getTop3Items();
+
         });
     }      
+
+    getTop3Items(){
+
+        var options ={
+            seed_tracks : [],
+            seed_genres : [],
+            target_popularity:70,
+            target_speechiness:this.lookFor.instrumentalness,
+            target_energy:this.lookFor.energyVal,
+            target_danceability:this.lookFor.danceability
+        };      
+
+        // for(var i=0; i<3; i++){
+        //     options.seed_genres += this.lookFor.finalGenreCount[i].key + ",";
+        //     options.seed_tracks += this.lookFor.tracks[i].id + ",";
+        // }
+        //options.seed_genres = options.seed_genres.slice(0,-1);
+        //options.seed_genres = options.seed_genres.replace(" ", "+");
+        //options.seed_tracks = options.seed_tracks.slice(0,-1);
+        //options.seed_genres="alternative+metal,rap+rock";
+        //options.seed_genres="60a0Rd6pjrkxjPbaKzXjfq,1Cj2vqUwlJVG27gJrun92y";
+        //options.seed_tracks = "60a0Rd6pjrkxjPbaKzXjfq,1Cj2vqUwlJVG27gJrun92y,2nLtzopw4rPReszdYBJU6h";
+        //options.seed_genres= "alternative+metal,metal,rock";
+
+        options.seed_tracks = this.lookFor.tracks[0].id+","+this.lookFor.tracks[1].id+","+this.lookFor.tracks[2].id;
+        options.seed_genres = this.lookFor.finalGenreCount[0].key+","+this.lookFor.finalGenreCount[1].key;
+        options.seed_genres = options.seed_genres.replace(" ", "+");
+        this.spotify.recommendations(options).then(result=>{
+            var data = JSON.parse(result.response);
+
+            this.lookFor.recommended = [];
+            data.tracks.forEach(track=>{
+                this.lookFor.recommended.push({
+                    id:track.id,
+                    name:track.name,
+                    popularity:track.popularity,
+                    preview_url:track.preview_url
+                });
+            });
+
+            this.lookFor.recommended = this.lookFor.recommended.sort((a,b)=>{
+                return b.popularity-a.popularity;
+            })
+  
+        });
+    }
 
     getArtistResults(resolve){
 
@@ -109,6 +144,7 @@ export class Final{
 
     getAlbumResults(resolve){
 
+        var promises
         Promise.all([
             this.search(this.userResponses.album[0], 'album'),
             this.search(this.userResponses.album[1], 'album'),
@@ -142,9 +178,9 @@ export class Final{
                 });
 
                  //remove genres that don't fit what the artist search had
-                //  this.lookFor.genresFromAlbums = this.lookFor.genresFromAlbums.filter(i=>{
-                //      return this.lookFor.genresFromArtists.indexOf(i) >= 0;
-                //  });
+                 this.lookFor.genresFromAlbums = this.lookFor.genresFromAlbums.filter(i=>{
+                     return this.lookFor.genresFromArtists.indexOf(i) >= 0;
+                 });
                 
                 this.lookFor.genresFromAlbumsCounts = GetInfo.getItemCounts(this.lookFor.genresFromAlbums);
 

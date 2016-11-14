@@ -3,7 +3,15 @@
     <h1>Final Results</h1>
     <button click.delegate="login()">Login</button>
 
-
+   <div class="album-artists-counts">
+        <label>Recommendations</label>
+        <div class="row" repeat.for="item of lookFor.recommended">
+            <div class="col-sm-4">${item.id}</div>
+            <div class="col-sm-2">${item.name}</div>
+            <div class="col-sm-2"><a href="${item.preview_url}" target="_blank">Preview</a></div>
+            <div class="col-sm-2">${item.popularity}</div>
+        </div>
+    </div> 
     <div class="album-artists-counts">
         <label>1.a Genres from Artists</label>
         <div class="row" repeat.for="item of lookFor.genresFromArtistsCounts">
@@ -42,6 +50,6 @@
             <div class="col-sm-4">${item.key}</div>
             <div class="col-sm-2">${item.value}</div>
         </div>
-    </div>           
+    </div>                   
    
 </template>
