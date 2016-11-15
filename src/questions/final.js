@@ -39,8 +39,11 @@ export class Final{
             this.doWorkTrack()
         ]).then(()=>{
 
-            //this.doWorkGenres();
-            this.doWorkGenres();
+            return this.doWorkGenres();
+        }).then(()=>{
+
+            this.filterRecommendations();
+            debugger;
         });
     }
 
@@ -66,57 +69,95 @@ export class Final{
         // return new Promise((resolve)=>{
         //     this.getTracksFromGenres(resolve);
         // });
+        return new Promise((resolve)=>{
+            this.getTracksFromGenres().then(()=>{
 
-        this.getTracksFromGenres().then(()=>{
+                return this.getTop3Items();
+            }).then(()=>{
+                
+                return this.filterRecommendations();
+           
+            }).then(()=>{
+                resolve();
+            });
+        });
 
-            this.getTop3Items();
+    }      
+
+    filterRecommendations(){
+
+        return new Promise((resolve)=>{
+
+            var artist_ids = "";
+
+            this.lookFor.recommended.forEach(item=>{
+                artist_ids += item.artist_id+",";
+            });
+            artist_ids = artist_ids.slice(0, -1);
+
+            this.spotify.getArtists(artist_ids).then((result)=>{
+
+                var data = JSON.parse(result.response);
+
+                data.artists.forEach((item,i)=>{
+
+                    this.lookFor.recommended[i].remove = false;
+                    var artist_genres = item.genres;
+                    artist_genres.forEach(genre=>{
+                        var isInFinalGenreCount = this.lookFor.finalGenreCount.findIndex((i)=>{
+                            return i.key==genre;
+                        });
+                        if(isInFinalGenreCount<0)
+                            this.lookFor.recommended[i].remove = true;
+                    })
+                });
+
+                this.lookFor.recommended = this.lookFor.recommended.filter(i=>{
+                    return !i.remove;
+                });
+                resolve();
+            });   
 
         });
-    }      
+
+    }
 
     getTop3Items(){
 
-        var options ={
-            seed_tracks : [],
-            seed_genres : [],
-            target_popularity:70,
-            target_speechiness:this.lookFor.instrumentalness,
-            target_energy:this.lookFor.energyVal,
-            target_danceability:this.lookFor.danceability
-        };      
+        return new Promise((resolve)=>{
 
-        // for(var i=0; i<3; i++){
-        //     options.seed_genres += this.lookFor.finalGenreCount[i].key + ",";
-        //     options.seed_tracks += this.lookFor.tracks[i].id + ",";
-        // }
-        //options.seed_genres = options.seed_genres.slice(0,-1);
-        //options.seed_genres = options.seed_genres.replace(" ", "+");
-        //options.seed_tracks = options.seed_tracks.slice(0,-1);
-        //options.seed_genres="alternative+metal,rap+rock";
-        //options.seed_genres="60a0Rd6pjrkxjPbaKzXjfq,1Cj2vqUwlJVG27gJrun92y";
-        //options.seed_tracks = "60a0Rd6pjrkxjPbaKzXjfq,1Cj2vqUwlJVG27gJrun92y,2nLtzopw4rPReszdYBJU6h";
-        //options.seed_genres= "alternative+metal,metal,rock";
+            var options ={
+                seed_tracks : [],
+                seed_genres : [],
+                target_popularity:70,
+                target_speechiness:this.lookFor.instrumentalness,
+                target_energy:this.lookFor.energyVal,
+                target_danceability:this.lookFor.danceability
+            };      
 
-        options.seed_tracks = this.lookFor.tracks[0].id+","+this.lookFor.tracks[1].id+","+this.lookFor.tracks[2].id;
-        options.seed_genres = this.lookFor.finalGenreCount[0].key+","+this.lookFor.finalGenreCount[1].key;
-        options.seed_genres = options.seed_genres.replace(" ", "+");
-        this.spotify.recommendations(options).then(result=>{
-            var data = JSON.parse(result.response);
+            options.seed_tracks = this.lookFor.tracks[0].id+","+this.lookFor.tracks[1].id+","+this.lookFor.tracks[2].id;
+            options.seed_genres = this.lookFor.finalGenreCount[0].key+","+this.lookFor.finalGenreCount[1].key;
+            options.seed_genres = options.seed_genres.replace(" ", "+");
+            this.spotify.recommendations(options).then(result=>{
+                var data = JSON.parse(result.response);
 
-            this.lookFor.recommended = [];
-            data.tracks.forEach(track=>{
-                this.lookFor.recommended.push({
-                    id:track.id,
-                    name:track.name,
-                    popularity:track.popularity,
-                    preview_url:track.preview_url
+                this.lookFor.recommended = [];
+                data.tracks.forEach(track=>{
+                    this.lookFor.recommended.push({
+                        id:track.id,
+                        name:track.name,
+                        popularity:track.popularity,
+                        preview_url:track.preview_url,
+                        artist_url:track.artists[0].href,
+                        artist_id:track.artists[0].id
+                    });
                 });
-            });
 
-            this.lookFor.recommended = this.lookFor.recommended.sort((a,b)=>{
-                return b.popularity-a.popularity;
-            })
-  
+                this.lookFor.recommended = this.lookFor.recommended.sort((a,b)=>{
+                    return b.popularity-a.popularity;
+                });
+                resolve();
+            });
         });
     }
 
