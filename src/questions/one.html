@@ -1,34 +1,70 @@
 <template>
 
-    <ul> 
-        <li>Enter 3 of your favorite artists</li>
-        <li>
-            <ol>
-                <li><input type="text" value.bind="userResponses.artist[0]"/></li>
-                <li><input type="text" value.bind="userResponses.artist[1]"/></li>
-                <li><input type="text" value.bind="userResponses.artist[2]"/></li>
-            </ol>        
-        </li>           
-        <hr/>
-        <li>Enter 3 of your favorite albums</li>
-
-        <li>
-            <ol>
-                <li><input type="text" value.bind="userResponses.album[0]"/></li>
-                <li><input type="text" value.bind="userResponses.album[1]"/></li>
-                <li><input type="text" value.bind="userResponses.album[2]"/></li>
-            </ol>        
+    <ul class="list-group"> 
+        <li class="list-group-item">
+            <h4>Enter your 3 favorite artists</h4>
         </li>
-        <hr/>
-        <li>Enter 3 of your favorite songs</li>
-        <li>
-            <ol>
-                <li><input type="text" value.bind="userResponses.track[0]"/></li>
-                <li><input type="text" value.bind="userResponses.track[1]"/></li>
-                <li><input type="text" value.bind="userResponses.track[2]"/></li>
-            </ol>        
+        <li class="list-group-item">
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">1</span>
+                <input type="text" class="form-control" value.bind="userResponses.artist[0]" placeholder="Enter Artist">
+            </div>    
+            <br/>        
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">2</span>
+                <input type="text" class="form-control" value.bind="userResponses.artist[1]" placeholder="Enter Artist">
+            </div>         
+            <br/>   
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">3</span>
+                <input type="text" class="form-control" value.bind="userResponses.artist[2]" placeholder="Enter Artist">
+            </div>
         </li>        
-
     </ul>
-    <button click.delegate="next()">Next</button>
+
+    <ul class="list-group"> 
+        <li class="list-group-item">
+            <h4>Enter your 3 favorite albums from each artist</h4>
+        </li>
+        <li class="list-group-item">
+            <div class="input-group">
+                <span class="input-group-addon">1</span>
+                <input type="text" class="form-control" value.bind="userResponses.album[0]" placeholder="Enter Album">
+            </div>    
+            <br/>        
+            <div class="input-group">
+                <span class="input-group-addon">2</span>
+                <input type="text" class="form-control" value.bind="userResponses.album[1]" placeholder="Enter Album">
+            </div>         
+            <br/>   
+            <div class="input-group">
+                <span class="input-group-addon">3</span>
+                <input type="text" class="form-control" value.bind="userResponses.album[2]" placeholder="Enter Album">
+            </div>
+        </li>        
+    </ul>
+
+    <ul class="list-group"> 
+        <li class="list-group-item">
+            <h4>Enter your 3 favorite songs from each artist</h4>
+        </li>
+        <li class="list-group-item">
+            <div class="input-group">
+                <span class="input-group-addon">1</span>
+                <input type="text" class="form-control" value.bind="userResponses.track[0]" placeholder="Enter Song">
+            </div>    
+            <br/>        
+            <div class="input-group">
+                <span class="input-group-addon">2</span>
+                <input type="text" class="form-control" value.bind="userResponses.track[1]" placeholder="Enter Song">
+            </div>         
+            <br/>   
+            <div class="input-group">
+                <span class="input-group-addon">3</span>
+                <input type="text" class="form-control" value.bind="userResponses.track[2]" placeholder="Enter Song">
+            </div>
+        </li>        
+    </ul>
+
+    <button class="btn btn-large btn-primary" click.delegate="next()">Next</button>
 </template>

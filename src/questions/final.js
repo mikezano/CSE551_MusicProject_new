@@ -18,6 +18,10 @@ export class Final{
         };
     }
 
+    startOver(){
+        this.router.navigate("");
+    }
+
     login(){
         this.spotify.login().then(data=>{
             console.log("Logged In", data);
@@ -43,7 +47,6 @@ export class Final{
         }).then(()=>{
 
             this.filterRecommendations();
-            debugger;
         });
     }
 
